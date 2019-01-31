@@ -1,4 +1,4 @@
 # dsp
 Signal processing
 
-A quick python review of some signal processing algorithms.
+A quick Python 3 review of some signal processing algorithms.
