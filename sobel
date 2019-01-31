@@ -1,0 +1,10 @@
+
+
+###  Two 3×3 kernels convolved with the original image to approximate the derivatives – one for horizontal changes, one for vertical.
+
+import numpy as np
+
+s_x = np.array([[-1,0,1],[-2,0,2],[-1,0,1]])
+
+s_y = np.array([[-1,-2,-1],[0,0,0],[1,2,1]])
+
