@@ -1,4 +1,4 @@
 
 ### makes an image appear fuzzy
 ### used to remove noise from a signal
-
+### it is quite a smooth blurriness, so can be used to smooth out coarse 'blocky' images
