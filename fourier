@@ -1,6 +1,7 @@
 import numpy as np
 
 ### Discrete Fourier Transformation -- of 'rank one' array a
+### numbers with 'j' are complex numbers (e.g. 1j)
 def DFT_naive(a):
     a = np.asarray(a, dtype=float)
     N = a.shape[0]
