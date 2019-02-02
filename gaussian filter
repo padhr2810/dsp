@@ -1,6 +1,6 @@
 
 
-### make an image fuzzy - i.e. get rid of sharp edges in image
+### low-level filter to make an image fuzzy - i.e. get rid of sharp edges in image
 ### remove noise from a signal
 ### produces a quite smooth blurriness, smooth out coarse 'blocky' images
 ### more controlled and preserves edges better than a mean blur, popular approach
