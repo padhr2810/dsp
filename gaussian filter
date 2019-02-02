@@ -9,13 +9,15 @@ import numpy as np
 gauss_mat = np.array([[1,2,1],[2,4,2],[1,2,1]])
 gauss_name = "gaussian_3x3_matrix"
 
-################## element-wise multiplication of 3x3 matrix:
+################## element-wise multiplication of 3x3 matrix - followed by addition:
+################## ie element wise, NOT matrix multiplication (but would be different for channels)
 def element_wise_mult_3(mat1, mat2):
   new_mat = np.empty([3,3])
   for x in range(3):
     for y in range(3):
       new_mat[x,y] = mat1[x,y] * mat2[x,y]
-  return new_mat
+      new_mat_scalar_sum = np.sum(new_mat)
+  return new_mat_scalar_sum
 
 ################## create lines to analyse.
 line_vertical   = np.array([[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0]])
@@ -26,20 +28,16 @@ line_diagonal_2 = np.array([[0,0,0,0,10],[0,0,0,10,0],[0,0,10,0,0],[0,10,0,0,0],
 line_list  = [line_vertical, line_horizontal, line_diagonal_1, line_diagonal_2]
 line_names  = ["line_vertical", "line_horizontal", "line_diagonal_1", "line_diagonal_2"]
 
-final_mat = np.empty([line_vertical.ndim - 2],[line_vertical.ndim - 2])
-for x in range(3):
-    for y in range(3):
-        sub_mat = main_mat[x:x+3,y:y+3]
-        final_mat[x][y] = element_wise_mult_3(gauss_mat, sub_mat)
-        
-        
-0,0 0,1 0,2
-1,0 1,1 1,2
-2,0 2,1 2,2
+################## run gaussian filter over the matrices in 'line_list' 
+line_counter = 0
+for main_mat in line_list:
+    final_mat = np.empty([main_mat.shape[0] - 2, main_mat.shape[1] - 2])
+
+    for x in range(3):
+        for y in range(3):
+            sub_mat = main_mat[x:x+3,y:y+3]
+            final_mat[x][y] = element_wise_mult_3(gauss_mat, sub_mat)
+    print("/n/n {} :/n {}".format(line_names[line_counter], final_mat))
+    line_counter += 1
 
 
-l_count= 0
-for l in line_list:
-  print("{} * {}\n{} \n* \n{} \n= \n{}\n\n".format(sobel_names[s_count], line_names[l_count], s, l, np.dot(s, l)))
-  l_count += 1
-  s_count += 1
