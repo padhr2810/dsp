@@ -1,7 +1,7 @@
 
-### makes an image appear fuzzy - i.e. get rid of sharp edges in image
-### used to remove noise from a signal
-### produces a quite smooth blurriness, can smooth out coarse 'blocky' images
+### make an image fuzzy - i.e. get rid of sharp edges in image
+### remove noise from a signal
+### produces a quite smooth blurriness, smooth out coarse 'blocky' images
 
 import numpy as np
 
@@ -35,7 +35,9 @@ for main_mat in line_list:
 
     for x in range(3):
         for y in range(3):
+            ################## apply to 3x3 slices of main matrix.
             sub_mat = main_mat[x:x+3,y:y+3]
+            ################## insert a scalar in the final matrix
             final_mat[x][y] = element_wise_mult_3(gauss_mat, sub_mat)
     print("/n/n {} :/n {}".format(line_names[line_counter], final_mat))
     line_counter += 1
