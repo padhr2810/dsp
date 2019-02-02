@@ -1,4 +1,8 @@
 
-### makes an image appear fuzzy
+### makes an image appear fuzzy - i.e. get rid of sharp edges in image
 ### used to remove noise from a signal
-### it is quite a smooth blurriness, so can be used to smooth out coarse 'blocky' images
+### produces a quite smooth blurriness, can smooth out coarse 'blocky' images
+
+### example of a small gaussian filter (3x3)
+gauss_mat = np.array([[1,2,1],[2,4,2],[1,2,1]])
+
