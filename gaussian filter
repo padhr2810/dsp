@@ -6,8 +6,6 @@
 ### 2 x hyperparameters would be: I: radius (how big is the filter) II: s.d. (what is the SD of the normal distribution
 ###     if go for a big SD need a filter big enough to hold this information
 
-NOTE: NEED TO DIVIDE BY TOTAL VALUE OF KERNEL SO IT DOESN'T GET BRIGHTER. E.G. DIVIDE BY 9 IF ALL VALUES ARE 1`.
-
 import numpy as np
 
 ### example of a small gaussian filter (3x3)
