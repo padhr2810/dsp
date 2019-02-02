@@ -45,7 +45,7 @@ def run_3x3_filter(filter_mat, main_mat):
             sub_mat = main_mat[1][x:x+3,y:y+3]
             ################## insert a scalar in the final matrix
             final_mat[x][y] = element_wise_mult_3(filter_mat, sub_mat)
-    print("Result for {}: {}".format(main_mat[0], final_mat))
+    print("\n" + "Result for {}:".format(main_mat[0]) + "\n" + "{}".format(final_mat))
 
 filter_mat = gauss_mat
 for main_mat in line_list:
