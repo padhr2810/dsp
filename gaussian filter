@@ -3,6 +3,43 @@
 ### used to remove noise from a signal
 ### produces a quite smooth blurriness, can smooth out coarse 'blocky' images
 
+import numpy as np
+
 ### example of a small gaussian filter (3x3)
 gauss_mat = np.array([[1,2,1],[2,4,2],[1,2,1]])
+gauss_name = "gaussian_3x3_matrix"
 
+################## element-wise multiplication of 3x3 matrix:
+def element_wise_mult_3(mat1, mat2):
+  new_mat = np.empty([3,3])
+  for x in range(3):
+    for y in range(3):
+      new_mat[x,y] = mat1[x,y] * mat2[x,y]
+  return new_mat
+
+################## create lines to analyse.
+line_vertical   = np.array([[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0]])
+line_horizontal = np.array([[0,0,0,0,0],[0,0,0,0,0],[10,10,10,10,10],[0,0,0,0,0],[0,0,0,0,0]])
+line_diagonal_1 = np.array([[10,0,0,0,0],[0,10,0,0,0],[0,0,10,0,0],[0,0,0,10,0],[0,0,0,0,10]])
+line_diagonal_2 = np.array([[0,0,0,0,10],[0,0,0,10,0],[0,0,10,0,0],[0,10,0,0,0],[10,0,0,0,0]])
+
+line_list  = [line_vertical, line_horizontal, line_diagonal_1, line_diagonal_2]
+line_names  = ["line_vertical", "line_horizontal", "line_diagonal_1", "line_diagonal_2"]
+
+final_mat = np.empty([line_vertical.ndim - 2],[line_vertical.ndim - 2])
+for x in range(3):
+    for y in range(3):
+        sub_mat = main_mat[x:x+3,y:y+3]
+        final_mat[x][y] = element_wise_mult_3(gauss_mat, sub_mat)
+        
+        
+0,0 0,1 0,2
+1,0 1,1 1,2
+2,0 2,1 2,2
+
+
+l_count= 0
+for l in line_list:
+  print("{} * {}\n{} \n* \n{} \n= \n{}\n\n".format(sobel_names[s_count], line_names[l_count], s, l, np.dot(s, l)))
+  l_count += 1
+  s_count += 1
