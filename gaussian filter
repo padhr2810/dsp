@@ -2,6 +2,11 @@
 ### make an image fuzzy - i.e. get rid of sharp edges in image
 ### remove noise from a signal
 ### produces a quite smooth blurriness, smooth out coarse 'blocky' images
+### more controlled and preserves edges better than a mean blur, popular approach
+### 2 x hyperparameters would be: I: radius (how big is the filter) II: s.d. (what is the SD of the normal distribution
+###     if go for a big SD need a filter big enough to hold this information
+
+NOTE: NEED TO DIVIDE BY TOTAL VALUE OF KERNEL SO IT DOESN'T GET BRIGHTER. E.G. DIVIDE BY 9 IF ALL VALUES ARE 1`.
 
 import numpy as np
 
@@ -9,37 +14,41 @@ import numpy as np
 gauss_mat = np.array([[1,2,1],[2,4,2],[1,2,1]])
 gauss_name = "gaussian_3x3_matrix"
 
-################## element-wise multiplication of 3x3 matrix - followed by addition:
-################## ie element wise, NOT matrix multiplication (but would be different for channels)
-def element_wise_mult_3(mat1, mat2):
+### example of a mean blur filter (3x3)
+mean_blur_matrix = [[1,1,1],[1,1,1],[1,1,1]]
+
+################## convolution: element-wise multiplication of 3x3 matrix - followed by addition:
+################## ie element wise, NOT matrix dot multiplication (but would be different if had multiple channels)
+def element_wise_mult_3(mat_filter, mat_image):
   new_mat = np.empty([3,3])
   for x in range(3):
     for y in range(3):
-      new_mat[x,y] = mat1[x,y] * mat2[x,y]
-      new_mat_scalar_sum = np.sum(new_mat)
+      new_mat[x,y] = mat_filter[x,y] * mat_image[x,y]
+      ################## add values and normalise by dividing by sum of filter elements.
+      new_mat_scalar_sum = np.sum(new_mat) / np.sum(mat_filter)
   return new_mat_scalar_sum
 
-################## create lines to analyse.
-line_vertical   = np.array([[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0]])
-line_horizontal = np.array([[0,0,0,0,0],[0,0,0,0,0],[10,10,10,10,10],[0,0,0,0,0],[0,0,0,0,0]])
-line_diagonal_1 = np.array([[10,0,0,0,0],[0,10,0,0,0],[0,0,10,0,0],[0,0,0,10,0],[0,0,0,0,10]])
-line_diagonal_2 = np.array([[0,0,0,0,10],[0,0,0,10,0],[0,0,10,0,0],[0,10,0,0,0],[10,0,0,0,0]])
+################## create images (straight & diagonal lines) to analyse.
+line_vertical   = ("line_vertical", np.array([[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0]]))
+line_horizontal = ("line_horizontal", np.array([[0,0,0,0,0],[0,0,0,0,0],[10,10,10,10,10],[0,0,0,0,0],[0,0,0,0,0]]))
+line_diagonal_1 = ("line_diagonal_1", np.array([[10,0,0,0,0],[0,10,0,0,0],[0,0,10,0,0],[0,0,0,10,0],[0,0,0,0,10]]))
+line_diagonal_2 = ("line_diagonal_2", np.array([[0,0,0,0,10],[0,0,0,10,0],[0,0,10,0,0],[0,10,0,0,0],[10,0,0,0,0]]))
 
 line_list  = [line_vertical, line_horizontal, line_diagonal_1, line_diagonal_2]
-line_names  = ["line_vertical", "line_horizontal", "line_diagonal_1", "line_diagonal_2"]
 
-################## run gaussian filter over the matrices in 'line_list' 
-line_counter = 0
-for main_mat in line_list:
-    final_mat = np.empty([main_mat.shape[0] - 2, main_mat.shape[1] - 2])
+################## func to run filter over matrix
+def run_3x3_filter(filter_mat, main_mat):
+    #### initialise empty final vector.
+    final_mat = np.empty([main_mat[1].shape[0] - 2, main_mat[1].shape[1] - 2])
 
     for x in range(3):
         for y in range(3):
             ################## apply to 3x3 slices of main matrix.
-            sub_mat = main_mat[x:x+3,y:y+3]
+            sub_mat = main_mat[1][x:x+3,y:y+3]
             ################## insert a scalar in the final matrix
-            final_mat[x][y] = element_wise_mult_3(gauss_mat, sub_mat)
-    print("/n/n {} :/n {}".format(line_names[line_counter], final_mat))
-    line_counter += 1
+            final_mat[x][y] = element_wise_mult_3(filter_mat, sub_mat)
+    print("/n/n Result for {}:/n {}".format(main_mat[0], final_mat))
 
-
+filter_mat = gauss_mat
+for main_mat in line_list:
+    run_3x3_filter(filter_mat, main_mat)
