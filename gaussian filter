@@ -53,7 +53,7 @@ filter_mat = gauss_mat
 for main_mat_tuple in line_list:
     run_3x3_filter(filter_mat, main_mat_tuple)
     
-print("\n\n" + "MEAN BLUR FILTER")
+print("\n" + "MEAN BLUR FILTER")
 filter_mat = mean_blur_matrix
 for main_mat_tuple in line_list:
     run_3x3_filter(filter_mat, main_mat_tuple)
