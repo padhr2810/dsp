@@ -9,4 +9,3 @@ all implemented in Numpy
 
 note: still to add CNN / LSTM for sensor fusion <br>
 particle filter
-kalman filter
