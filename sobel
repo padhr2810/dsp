@@ -1,30 +1,74 @@
 
-
 ###  Two 3×3 kernels convolved with the original image to approximate the derivatives – one for horizontal changes, one for vertical.
 
 import numpy as np
 
+##################  
+##################  define the Sobel filters -- and the image matrices
+##################  
 s_x = np.array([[-1,0,1],[-2,0,2],[-1,0,1]])
-s_y = np.array([[-1,-2,-1],[0,0,0],[1,2,1]])
+s_y = s_x.T
 
 
-line_vertical = np.array([[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0]])
-line_horizontal = np.array([[0,0,0,0,0],[0,0,0,0,0],[10,10,10,10,10],[0,0,0,0,0],[0,0,0,0,0]])
-line_diagonal_1 = np.array([[10,0,0,0,0],[0,10,0,0,0],[0,0,10,0,0],[0,0,0,10,0],[0,0,0,0,10]])
-line_diagonal_2 = np.array([[0,0,0,0,10],[0,0,0,10,0],[0,0,10,0,0],[0,10,0,0,0],[10,0,0,0,0]])
+line_vertical   = ("line_vertical", np.array([[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0],[0,0,10,0,0]]))
+line_horizontal = ("line_horizontal", np.array([[0,0,0,0,0],[0,0,0,0,0],[10,10,10,10,10],[0,0,0,0,0],[0,0,0,0,0]]))
+line_diagonal_1 = ("line_diagonal_1", np.array([[10,0,0,0,0],[0,10,0,0,0],[0,0,10,0,0],[0,0,0,10,0],[0,0,0,0,10]]))
+line_diagonal_2 = ("line_diagonal_2", np.array([[0,0,0,0,10],[0,0,0,10,0],[0,0,10,0,0],[0,10,0,0,0],[10,0,0,0,0]]))
 
+
+################## convolution func: element-wise multiplication of 3x3 matrix:
+################## ie element wise, NOT matrix dot multiplication (but would be different if had multiple channels)
+def element_wise_mult_3(mat_filter, mat_image):
+  new_mat = np.empty([3,3])
+  for x in range(3):
+    for y in range(3):
+      new_mat[x,y] = mat_filter[x,y] * mat_image[x,y]
+  return new_mat
+
+
+
+################## func to run filter over matrix
+def run_3x3_filter(sobel_list, main_mat_tuple):
+    #### initialise empty final vector.
+    final_mat = np.empty([main_mat_tuple[1].shape[0] - 2, main_mat_tuple[1].shape[1] - 2])
+
+    for x in range(3):
+        for y in range(3):
+            ################## apply to 3x3 slices of main matrix.
+            sub_mat = main_mat_tuple[1][x:x+3,y:y+3]
+            ################## insert a scalar in the final matrix
+            final_mat_s_x = element_wise_mult_3(sobel_list[0], sub_mat)
+            final_mat_s_y = element_wise_mult_3(sobel_list[1], sub_mat)
+            s_xy =  np.sqrt(final_mat_s_x ** 2 + final_mat_s_y ** 2)
+            ################## add values
+            final_mat[x][y] = np.sum(s_xy)
+    return final_mat
+
+
+##################  run the Sobel filters - then calculate Hypotenuse (i.e. get 2 vectors at right angles
+##################  calculate the other vector - ie the hypotenuse of triangle - this becomes the new pixel value
+##################  in numpy would be: np.hypot(dx, dy)
 
 sobel_list = [s_x, s_y]
-sobel_names = ["s_x", "s_y"]
 line_list  = [line_vertical, line_horizontal, line_diagonal_1, line_diagonal_2]
-line_names  = ["line_vertical", "line_horizontal", "line_diagonal_1", "line_diagonal_2"]
 
-s_count = 0
-for s in sobel_list:
+for m in line_list:
+    res = run_3x3_filter(sobel_list, m)
+    print("\n" + "Result for {}: {}".format(m[0], res))
+
+"""
+    ################## insert a scalar in the final matrix
+    print("\n" + "Result for {}:".format(main_mat_tuple[0]) + "\n" + "{}".format(final_mat))
+
   l_count= 0
   for l in line_list:
     print("{} * {}\n{} \n* \n{} \n= \n{}\n\n".format(sobel_names[s_count], line_names[l_count], s, l, np.dot(s, l)))
-    l_count += 1
-  s_count += 1
+    l_count += 1  
+
+  NORMALISE -
+mag *= 255.0 / np.max(mag)  # normalize
+"""
+
+
 
 
