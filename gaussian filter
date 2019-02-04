@@ -18,7 +18,7 @@ mean_blur_matrix = np.array([[1,1,1],[1,1,1],[1,1,1]])
 
 ################## convolution: element-wise multiplication of 3x3 matrix - followed by addition:
 ################## ie element wise, NOT matrix dot multiplication (but would be different if had multiple channels)
-def element_wise_mult_3(mat_filter, mat_image):
+def element_wise_mult_add_3(mat_filter, mat_image):
   new_mat = np.empty([3,3])
   for x in range(3):
     for y in range(3):
@@ -45,7 +45,7 @@ def run_3x3_filter(filter_mat, main_mat_tuple):
             ################## apply to 3x3 slices of main matrix.
             sub_mat = main_mat_tuple[1][x:x+3,y:y+3]
             ################## insert a scalar in the final matrix
-            final_mat[x][y] = element_wise_mult_3(filter_mat, sub_mat)
+            final_mat[x][y] = element_wise_mult_add_3(filter_mat, sub_mat)
     print("\n" + "Result for {}:".format(main_mat_tuple[0]) + "\n" + "{}".format(final_mat))
 
 print("GAUSSIAN FILTER")
