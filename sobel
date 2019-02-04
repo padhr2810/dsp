@@ -37,6 +37,7 @@ def run_3x3_filter(sobel_list, main_mat_tuple):
             ################## apply to 3x3 slices of main matrix.
             sub_mat = main_mat_tuple[1][x:x+3,y:y+3]
             ################## insert a scalar in the final matrix
+            ################## note: use ** instead of ^   (Python interprets ^ as an xor)
             final_mat_s_x = element_wise_mult_3(sobel_list[0], sub_mat)
             final_mat_s_y = element_wise_mult_3(sobel_list[1], sub_mat)
             s_xy =  np.sqrt(final_mat_s_x ** 2 + final_mat_s_y ** 2)
@@ -54,20 +55,11 @@ line_list  = [line_vertical, line_horizontal, line_diagonal_1, line_diagonal_2]
 
 for m in line_list:
     res = run_3x3_filter(sobel_list, m)
-    print("\n" + "Result for {}: {}".format(m[0], res))
-
-"""
-    ################## insert a scalar in the final matrix
-    print("\n" + "Result for {}:".format(main_mat_tuple[0]) + "\n" + "{}".format(final_mat))
-
-  l_count= 0
-  for l in line_list:
-    print("{} * {}\n{} \n* \n{} \n= \n{}\n\n".format(sobel_names[s_count], line_names[l_count], s, l, np.dot(s, l)))
-    l_count += 1  
+    print("\n" + "Result for {}:".format(m[0]) + "\n" + "{}".format(res))
 
   NORMALISE -
 mag *= 255.0 / np.max(mag)  # normalize
-"""
+
 
 
 
