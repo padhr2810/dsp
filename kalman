@@ -12,7 +12,7 @@ B = input effect matrix
 U = control input
 """
 
-################################################ Step 1: predict the mean 'X' and covariance 'P' at time step K.
+################################################ Step 1: Anterior probability -predict the mean 'X' and covariance 'P' at time step K.
 
 def kf_predict(X, P, A, Q, B, U):
     X = np.dot(A, X) + np.dot(B, U)    
