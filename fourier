@@ -1,21 +1,21 @@
+
 import numpy as np
+import timeit
 
 ### Discrete Fourier Transformation -- of 'rank one' array a
 ### numbers with 'j' are complex numbers (e.g. 1j)
 def DFT_naive(a):
+    ### Ensure it is float format.
     a = np.asarray(a, dtype=float)
+    ### Dimensions on first axis:
     N = a.shape[0]
     n = np.arange(N)
+    print("n for DFT_naive: {}".format(n))
     k = n.reshape((N, 1))
+    print("k for DFT_naive: {}".format(k))
     M = np.exp(-2j * np.pi * k * n / N)
+    print("M for DFT_naive: {}".format(M))
     return np.dot(M, a)
-  
-### compare against numpy Fast Fourier Transform
-a = np.random.random(2048)
-np.allclose(DFT_naive(a), np.fft.fft(a))
-
-%timeit DFT_slow(a)
-%timeit np.fft.fft(a)
 
 def FFT_impl(a):
     """A recursive implementation of the 1D Cooley-Tukey FFT"""
@@ -27,16 +27,48 @@ def FFT_impl(a):
     elif N <= 32:  # this cutoff should be optimized
         return DFT_naive(a)
     else:
-        A_even = FFT(a[::2])
-        A_odd = FFT(a[1::2])
+        A_even = FFT_impl(a[::2])
+        A_odd = FFT_impl(a[1::2])
         factor = np.exp(-2j * np.pi * np.arange(N) / N)
         return np.concatenate([A_even + factor[:N / 2] * A_odd,
                                A_even + factor[N / 2:] * A_odd])
 
 a = np.random.random(2048)
-np.allclose(FFT(a), np.fft.fft(a))
+print("len a: {}".format(len(a)))
+
+### compare against numpy Fast Fourier Transform
+DFT_result = DFT_naive(a)
+print("DFT_result: {}".format(DFT_result))
+print("Shape of DFT_result: {}".format(DFT_result.shape))
+print("Dim of DFT_result: {}".format(DFT_result.ndim))
 
 
-%timeit DFT_naive(a)
-%timeit FFT_impl(a)
-%timeit np.fft.fft(a)
+a = np.random.random(2048)
+print()
+np_fft_result = np.fft.fft(a)
+print("np_fft_result: {}".format(np_fft_result))
+print("Shape of np_fft_result: {}".format(np_fft_result.shape))
+print("Dim of np_fft_result: {}".format(np_fft_result.ndim))
+print()
+
+
+a = np.random.random(2048)
+print()
+fft_impl_result = FFT_impl(a)
+print("fft_impl_result: {}".format(fft_impl_result))
+print("Shape of fft_impl_result: {}".format(fft_impl_result.shape))
+print("Dim of fft_impl_result: {}".format(fft_impl_result.ndim))
+print()
+
+
+#np.allclose(DFT_naive(a), np.fft.fft(a))
+
+#timeit.timeit(DFT_naive(a))
+#timeit.timeit(np.fft.fft(a))
+
+#np.allclose(FFT_impl(a), np.fft.fft(a))
+
+#timeit.timeit(DFT_naive(a))
+#timeit.timeit(FFT_impl(a))
+#timeit.timeit(np.fft.fft(a))
+
