@@ -17,6 +17,19 @@ def DFT_naive(a):
     print("M for DFT_naive: {}".format(M))
     return np.dot(M, a)
 
+"""
+FFT intuition:
+Divide the sample points into lower and upper halves, the even frequency components repeat in both halves, 
+the odd frequency components are the negative in the upper half. 
+That allows the separation of the signal into the even frequency part and odd frequency part. 
+For the even frequency part is only necessary to keep the first half. 
+The odd frequencies can be turned into even frequencies by multiplying by a (complex) frequency of -1 which shifts them all 
+left by one sample in the frequency domain, and only the second half needs to be retained after that. 
+Note the one bit has been reversed after operation as the even frequencies are in the lower half 
+and the odd frequencies are in the upper half. 
+Now repeat on each half.
+"""
+
 def FFT_impl(a):
     """A recursive implementation of the 1D Cooley-Tukey FFT"""
     a = np.asarray(a, dtype=float)
