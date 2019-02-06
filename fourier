@@ -28,6 +28,8 @@ left by one sample in the frequency domain, and only the second half needs to be
 Note the one bit has been reversed after operation as the even frequencies are in the lower half 
 and the odd frequencies are in the upper half. 
 Now repeat on each half.
+For arrays smaller than some number, the "fast" splitting procedure becomes slower than a simple direct approach in terms of 
+wall-clock time. Where it becomes slower will depend on the details implementation.
 """
 
 def FFT_impl(a):
