@@ -1,0 +1,69 @@
+
+import numpy as np
+import scipy.stats
+
+import matplotlib.pyplot as plt
+from matplotlib import style
+style.use('fivethirtyeight')
+
+np.random.seed(42)
+
+#############################################  
+#############################################  CREATE DATA CLUSTERS 1 TO 3, THEN COMBINE:
+#############################################  
+
+X = np.linspace(-5,5,num=20)
+X0 = X*np.random.rand(len(X))+10 
+X1 = X*np.random.rand(len(X))-10 
+X2 = X*np.random.rand(len(X)) 
+
+X_tot = np.stack((X0,X1,X2)).flatten()
+
+print()
+print(X0[0:3])
+print(X1[0:3])
+print(X2[0:3])
+
+print()
+print("len(X0) = {}".format(len(X0)))
+print("len(X1) = {}".format(len(X1)))
+print("len(X2) = {}".format(len(X2)))
+print("len(X_tot) = {}".format(len(X_tot)))
+
+
+#############################################  
+#############################################  Create array r (probability matrix) with dimensionality nxK (K = no.clusters)
+
+
+#############################################  	INSTANTIATE RANDOM GAUSSIANS.
+
+r = np.zeros((len(X_tot),3))  
+print("Dimensionality of r = {}".format(np.shape(r)))
+
+gauss_1 = scipy.stats.norm(loc=-5,scale=5) 
+gauss_2 = scipy.stats.norm(loc=8,scale=3)
+gauss_3 = scipy.stats.norm(loc=1.5,scale=1)
+
+
+#############################################  
+#############################################  Probability each datapoint x_i belongs to gaussian g
+#############################################  	
+
+counter = 0
+for c,g in zip(range(3),[gauss_1,gauss_2,gauss_3]):
+    r[:,c] = g.pdf(X_tot) # 60x3 array with probability that each x_i belongs to one of the gaussians
+    counter += 1
+print("Number of iterations in the PDF loop: {}".format(counter))
+
+
+#############################################  Normalize probabilities, i.e. each row of r sums to 1 (i.e. maybe very low probability for every cluster but normalise and go for highest probability)
+
+counter = 0
+for i in range(len(r)):
+    r[i] = r[i]/np.sum(r,axis=1)[i]
+    counter += 1
+print("Number of iterations in the r[i] loop: {}".format(counter))
+
+#### CONFIRM EACH ROW SUMS TO ONE.
+print(r)
+print(np.sum(r,axis=1))
